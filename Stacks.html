@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Stacks</title>
+    <script src="stacks.js"></script>
+    <script>
+            var s1= new Stack();
+
+            /* Demonstrating stack LIFO */
+            console.log('Demonstrating stack LIFO');
+            for(var i=0;i<=9;i++){
+                s1.push(i.toString() + i.toString()); //just testing for strings. Remove toString() for numbers;
+                //s1.print();
+            }
+         //   s1.print();
+
+            for(i=0;i<5;i++){
+                s1.pop();
+                //s1.print();
+            }
+
+              console.log("Peeking into Stack:");
+              console.log(s1.peek());
+
+              console.log("Height of Stack is:")
+              console.log(s1.height());
+
+              console.log("Printing stack contents");
+              s1.print();
+
+              console.log("Clearing Stack...");
+              s1.clr();
+
+              console.log("Stack contents: ");
+              s1.print();
+              console.log("Stack top points to index: ");
+              console.log(s1.top);
+              console.log("Stack height: ");
+              console.log(s1.height());
+
+            /*Convert a decimal number to any base*/
+            function mulBaseConversion(number,base){
+                var s = new Stack();
+                var num = number;
+                 while(num>0){
+                     s.push(num%base);
+                     num= Math.floor(num/base);
+                 }
+                //s.print();
+
+                var conv = "";
+                while(s.top !== 0) {
+                    //console.log(s.pop().toString());
+                    conv = conv + s.pop().toString();
+                }
+                console.log("Number "+number+" to the base "+base+" is :")
+                console.log(conv);
+            }
+
+            mulBaseConversion(25,2);
+            mulBaseConversion(25,7);
+
+
+            /*Check for String Palindromes*/
+            function checkPalindrome(value){
+                var checkStr = value.toString();
+                /*console.log(checkStr);
+                console.log(checkStr.length);*/
+                var s = new Stack();
+
+                for(i=0; i<checkStr.length; i++){
+                    //console.log("Control here...")
+                    //console.log(checkStr);
+                    s.push(checkStr.charAt(i));
+
+                }
+                //s.print();
+                var revStr = "";
+                while(s.top!== 0){
+                    revStr= revStr + s.pop();
+                }
+
+                //console.log("Rev: "+revStr);
+
+                if(checkStr === revStr){
+                    console.log(checkStr + " is a palindrome.")
+                }
+                else{
+                    console.log(checkStr + " is NOT a palindrome.")
+                }
+
+            }
+
+            var a= 'apple';
+            var b= 'racecar';
+            var c= 1001;
+            checkPalindrome(a);
+            checkPalindrome(b);
+            checkPalindrome(c);
+
+            /**
+             * Exercises section: 1
+             * A stack can be used to ensure that an arithmetic expression has balanced paren‐
+             *theses. Write a function that takes an arithmetic expression as an argument and
+             *returns the postion in the expression where a parenthesis is missing. An example
+             *of an arithmetic expression with unbalanced parentheses is:
+             *2.3 + 23 / 12 + (3.14159 * .24.
+             * */
+
+            function parenMatcher(exp){
+                var expr = exp.toString();
+                console.log(expr);
+                var s= new Stack();
+                for(var i=0;i<expr.length;i++){
+                    if(expr.charAt(i) === '('){
+                        s.push(expr.charAt(i));
+                    }
+
+                    if(expr.charAt(i) === ')'){
+                        s.pop();
+                    }
+                }
+
+                if(s.isEmpty()){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
+            console.log(parenMatcher('(())'));
+            var ex1 = "(((2+3)*0.1)/1)";
+            console.log(parenMatcher(ex1));
+            var ex2 = "2.3 + 23 / 12 + (3.14159 * .24";
+            console.log(parenMatcher(ex2));
+
+
+            /**
+             * Exercises section: 2
+             * A postfix expression evaluator works on arithmetic expressions taking the following
+             *form:
+             *op1 op2 operator
+             *Using two stacks—one for the operands and one for the operators—design and
+             *implement a JavaScript function that converts infix expressions to postfix expressions,
+             *and then use the stacks to evaluate the expression.
+             * */
+             // Considering Expressions to be of the form 'a op b' for now
+            function postfixGenerator(expr){
+                var exp = expr.toString();
+                //Expected: op1 operand op2 operand op3 operand op4 ...
+
+                exp = exp.split(' ');
+                //console.log(exp);
+
+                var operators = new Stack();
+                var operands = new Stack();
+                var opers_rev = new Stack();
+
+                for(var i=0;i<exp.length; i++) {
+                    if (i % 2) {
+                        operators.push(exp[i]);
+                    }
+                    else {
+                        operands.push(exp[i]);
+                    }
+                }
+
+               /* operators.print();
+                operands.print();*/
+
+                while(!operators.isEmpty()){
+                    opers_rev.push(operators.pop());
+                    //console.log(operators.top);
+                }
+                //opers_rev.print();
+
+                while(!operands.isEmpty()){
+                    opers_rev.push(operands.pop());
+                    //console.log(operands.top);
+                }
+
+                var str= '';
+                opers_rev.print();
+
+                while(!opers_rev.isEmpty()){
+                    str += opers_rev.pop().toString();
+                }
+
+                console.log(str);  //The postfix string
+                return str;
+            }
+
+            postfixGenerator('a + b');
+            postfixGenerator('a + b - c + d * e / f % g');
+
+
+            /**
+             * An example of a real-world stack is a Pez dispenser. Imagine that your virtual Pez
+             *dispenser is filled with red, yellow, and white colors and you don’t like the yellow
+             *ones. Write a program that uses a stack (and maybe more than one) to remove the
+             *yellow ones without changing the order of the other candies in the dispenser.
+             * */
+
+             function pezDispenser(list){
+
+                var l = list;
+                console.log("Original : "+l);
+                var s1 = new Stack(); //to remove yellows;
+                var s2 = new Stack(); //Maintain order;
+
+                for(var i=0;i< l.length;i++){
+
+                    if(l.charAt(i) === 'Y' || l.charAt(i) === 'y'){
+                        continue;
+                    }
+
+                    s1.push(l.charAt(i));
+                }
+
+                //s1.print();
+
+                while(!s1.isEmpty()){
+                    s2.push(s1.pop());
+                }
+
+                //s2.print();
+                var str = '';
+
+                while(!s2.isEmpty()){
+                    str += s2.pop().toString();
+                }
+
+                console.log("Eliminating Yellows: "+str);
+                return str;
+
+            }
+
+
+            pezDispenser('RWRWYWWYRRRYWYYWYRRRWYRYWWRYYRW');
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
